@@ -1,20 +1,14 @@
 import hljs from 'highlightjs'
+
 import 'highlightjs/styles/tomorrow.css'
+import './style.css'
 
-const CODE_SAMPLE = `
-import Layout from './components/layout/layout.jsx'
-
-const vue = new Vue({
-  ...Layout
-})
-
-vue.$mount('#app')
-`.trim()
+import sourceCode from './tmp/source.code'
 
 const Code = {
   mounted () {
     const codeElem = this.$refs.code
-    window.codeElem = codeElem
+    window.codeDimensions = [codeElem.offsetWidth, codeElem.offsetHeight]
     hljs.highlightBlock(codeElem)
   },
 
@@ -22,7 +16,7 @@ const Code = {
     return (
       <div>
         <pre>
-          <code ref='code'>{CODE_SAMPLE}</code>
+          <code ref='code' class='code-elem'>{sourceCode}</code>
         </pre>
       </div>
     )

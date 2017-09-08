@@ -1,0 +1,10 @@
+.code-elem {
+  display: inline-block;
+  font-family: 'Fira Code';
+  font-size: 72px;
+}
+
+pre, code {
+  margin: 0;
+  padding: 0;
+}
