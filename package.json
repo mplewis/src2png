@@ -1,0 +1,26 @@
+{
+  "name": "src2png",
+  "version": "0.0.0",
+  "main": "src/app.js",
+  "author": "Matt Lewis <matt@mplewis.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "poi dev",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "eslint": "^3.0.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-config-vue": "^2.0.2",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "eslint-plugin-vue": "^2.1.0",
+    "highlightjs": "^9.10.0",
+    "poi": "^9.3.5"
+  },
+  "dependencies": {
+    "vue": "^2.4.2"
+  }
+}
