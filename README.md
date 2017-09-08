@@ -1,8 +1,8 @@
 # src2png
 
-<img src="/docs/banner.js.png" style="max-width: 600px;">
-
 Turn your source code into beautiful syntax-highlighted images. Great for presentations.
+
+<img src="/docs/banner.js.png" style="width: 600px;">
 
 # Examples
 
