@@ -42,7 +42,7 @@ ls ./tmp  # screenshots are saved here
 
 I needed high-quality screenshots of syntax-highlighted code snippets for a presentation.
 
-Chrome is an excellent rendering engine, and there are tons of JS libraries to
+Chrome is an excellent rendering engine, and there are tons of JS libraries that apply syntax highlighting to code.
 
 **Why did you do this in a headless Chrome browser and dev server? Isn't there something simpler?**
 
