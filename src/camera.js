@@ -1,17 +1,21 @@
 const puppeteer = require('puppeteer')
 const shell = require('shelljs')
 const cp = require('child_process')
+const path = require('path')
 
 const DEV_SERVER = 'http://localhost:4000'
 
-function copyCode () {
-  const src = process.argv[2]
-  if (!src) {
+// https://medium.com/@dtinth/making-unhandled-promise-rejections-crash-the-node-js-process-ffc27cfcc9dd
+process.on('unhandledRejection', up => { throw up })
+
+function listSourceFiles () {
+  const files = process.argv.slice(2)
+  if (files.length === 0) {
     console.error('Usage: node src/camera.js YOUR_SOURCE_FILE')
     process.exit(1)
   }
   shell.mkdir('-p', 'src/tmp')
-  shell.cp(src, 'src/tmp/source.code')
+  return files
 }
 
 function startServer () {
@@ -21,7 +25,7 @@ function startServer () {
   proc.on('close', code => console.log(`child proc exited with code ${code}`))
 }
 
-async function screenshot () {
+async function screenshot (dst) {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
 
@@ -39,24 +43,28 @@ async function screenshot () {
   width = parseInt(width * 1.1)
   height = parseInt(height * 1.2)
   await page.setViewport({ width, height })
-  await page.screenshot({ path: 'tmp/screenshot.png' })
+  await page.screenshot({ path: dst })
   browser.close()
 }
 
-function trim () {
-  shell.exec('convert tmp/screenshot.png -trim tmp/screenshot.png')
+function trim (dst) {
+  shell.exec(`convert ${dst} -trim ${dst}`)
 }
 
-function show () {
-  shell.exec('open tmp/screenshot.png')
+function show (dst) {
+  shell.exec(`open ${dst}`)
 }
 
 async function main () {
-  copyCode()
+  const files = listSourceFiles()
   startServer()
-  await screenshot()
-  trim()
-  show()
+  for (const src of files) {
+    const dst = `tmp/${path.basename(src)}.png`
+    shell.cp(src, 'src/tmp/source.code')
+    await screenshot(dst)
+    trim(dst)
+    show(dst)
+  }
   process.exit()
 }
 
