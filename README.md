@@ -1,5 +1,7 @@
 # src2png
 
+<img src="/docs/banner.js.png" style="max-width: 600px;">
+
 Turn your source code into beautiful syntax-highlighted images. Great for presentations.
 
 # Examples
@@ -12,6 +14,7 @@ Turn your source code into beautiful syntax-highlighted images. Great for presen
 
 ```sh
 yarn install
+brew install imagemagick  # trims image margins
 node src/camera.js YOUR_SOURCE_FILE [YOUR_SOURCE_FILE [...]]
 ls ./tmp  # screenshots are saved here
 ```
