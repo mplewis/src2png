@@ -2,7 +2,7 @@
 
 Turn your source code into beautiful syntax-highlighted images. Great for presentations.
 
-<img src="/docs/banner.js.png" style="width: 600px;">
+<img src="/docs/banner.js.png" width="600px">
 
 # Examples
 
