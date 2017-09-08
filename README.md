@@ -12,6 +12,8 @@ Turn your source code into beautiful syntax-highlighted images. Great for presen
 
 # Usage
 
+Install the [Fira Code](https://github.com/tonsky/FiraCode) font.
+
 ```sh
 yarn install
 brew install imagemagick  # trims image margins
