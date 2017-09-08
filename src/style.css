@@ -1,10 +1,11 @@
-.code-elem {
+.code-elem[class*="language-"] {
   display: inline-block;
   font-family: 'Fira Code';
   font-size: 72px;
+  white-space: pre;
 }
 
-pre, code {
+pre[class*="language-"], code[class*="language-"] {
   margin: 0;
   padding: 0;
 }

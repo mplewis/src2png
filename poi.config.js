@@ -4,7 +4,7 @@ module.exports = {
   },
   webpack (config) {
     config.module.rules.push({
-      test: /\.code$/,
+      test: /\.(code|path)$/,
       use: [{ loader: 'raw-loader' }]
     })
     return config
