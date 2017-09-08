@@ -30,6 +30,7 @@ ls ./tmp  # screenshots are saved here
   * Puppeteer starts an instance of Headless Chrome
   * Chrome is used to render the highlighted code
 * Renders and saves screenshots for each file (see diagram below)
+* ImageMagick post-processes each image by trimming whitespace
 
 ![](/docs/foreach_seq_diag.svg)
 
