@@ -44,6 +44,7 @@ async function screenshot (browser, dst) {
   height = parseInt(height * 1.2)
   await page.setViewport({ width, height })
   await page.screenshot({ path: dst })
+  return page.evaluate(() => window.error)
 }
 
 function trim (dst) {
@@ -58,15 +59,20 @@ async function main () {
   const files = listSourceFiles()
   startDevServer()
   const browser = await puppeteer.launch()
+  const errors = []
   for (const src of files) {
     const dst = `tmp/${path.basename(src)}.png`
     shell.cp(src, 'src/tmp/source.code')
     fs.writeFileSync('src/tmp/source.path', src)
-    await screenshot(browser, dst)
+    const error = await screenshot(browser, dst)
+    if (error) errors.push(error)
     trim(dst)
     show(dst)
   }
   browser.close()
+  for (const error of errors) {
+    console.error(error)
+  }
   process.exit() // kills any child processes (dev server)
 }
 

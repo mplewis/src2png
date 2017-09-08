@@ -1,4 +1,6 @@
-import prism from 'prismjs'
+import Prism from 'prismjs'
+import PrismLoader from 'prismjs-components-loader'
+import componentIndex from 'prismjs-components-loader/lib/all-components'
 
 import './themes/tomorrow.css'
 import './style.css'
@@ -8,6 +10,8 @@ import sourcePath from './tmp/source.path'
 
 const extensionCodes = {
   js: 'javascript',
+  py: 'python',
+  rb: 'ruby',
   ts: 'typescript'
 }
 
@@ -15,17 +19,19 @@ const extension = sourcePath.match(/.+\.(.+)/)[1]
 const langCode = extensionCodes[extension] || extension
 const langClass = `language-${langCode}`
 
+const prismLoader = new PrismLoader(componentIndex)
 try {
-  require(`prismjs/components/prism-${langCode}`)
+  prismLoader.load(Prism, langCode)
 } catch (e) {
-  // Silently fail if no language definition is found for this extension
+  console.warn(e)
+  window.error = e
 }
 
 const Code = {
   mounted () {
     const codeElem = this.$refs.code
     window.codeDimensions = [codeElem.offsetWidth, codeElem.offsetHeight]
-    prism.highlightAll()
+    Prism.highlightAll()
   },
 
   render () {

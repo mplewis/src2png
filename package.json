@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "prismjs": "^1.6.0",
+    "prismjs-components-loader": "^2.0.0",
     "puppeteer": "^0.10.2",
     "shelljs": "^0.7.8",
     "vue": "^2.4.2"
