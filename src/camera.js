@@ -8,7 +8,7 @@ const fs = require('fs')
 const DEV_SERVER = 'http://localhost:4000'
 
 // https://medium.com/@dtinth/making-unhandled-promise-rejections-crash-the-node-js-process-ffc27cfcc9dd
-process.on('unhandledRejection', up => { throw up })
+process.on('unhandledRejection', err => { throw err })
 
 function listSourceFiles () {
   const files = process.argv.slice(2)
