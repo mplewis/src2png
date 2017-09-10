@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer')
 const shell = require('shelljs')
+const Jimp = require('jimp')
 const cp = require('child_process')
 const path = require('path')
 const fs = require('fs')
@@ -47,8 +48,9 @@ async function screenshot (browser, dst) {
   return page.evaluate(() => window.error)
 }
 
-function trim (dst) {
-  shell.exec(`convert ${dst} -trim ${dst}`)
+async function trim (path) {
+  const img = await Jimp.read(path)
+  img.autocrop().write(path)
 }
 
 function show (dst) {

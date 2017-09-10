@@ -21,6 +21,7 @@
     "raw-loader": "^0.5.1"
   },
   "dependencies": {
+    "jimp": "^0.2.28",
     "prismjs": "^1.6.0",
     "prismjs-components-loader": "^2.0.0",
     "puppeteer": "^0.10.2",
