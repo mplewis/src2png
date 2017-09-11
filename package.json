@@ -6,9 +6,12 @@
   "license": "MIT",
   "scripts": {
     "dev": "poi dev",
+    "test": "mocha test",
+    "test-server": "mocha test --watch",
     "lint": "eslint ."
   },
   "devDependencies": {
+    "chai": "^4.1.2",
     "eslint": "^3.0.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-config-vue": "^2.0.2",
@@ -16,7 +19,8 @@
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
-    "eslint-plugin-vue": "^2.1.0"
+    "eslint-plugin-vue": "^2.1.0",
+    "mocha": "^3.5.2"
   },
   "dependencies": {
     "jimp": "^0.2.28",
