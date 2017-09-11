@@ -9,7 +9,7 @@ const DEV_SERVER = 'http://localhost:4000'
 // https://medium.com/@dtinth/making-unhandled-promise-rejections-crash-the-node-js-process-ffc27cfcc9dd
 process.on('unhandledRejection', err => { throw err })
 
-function listSourceFiles () {
+function sourceFiles () {
   const files = process.argv.slice(2)
   if (files.length === 0) {
     console.error('Usage: node src/camera.js YOUR_SOURCE_FILE')
@@ -26,11 +26,12 @@ function startDevServer () {
 }
 
 async function startBrowser () {
+  // Puppeteer/Chrome run in root mode in the Docker image - disable non-root enforcement during testing
   const args = process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox'] : []
   return puppeteer.launch({ args })
 }
 
-async function screenshot (browser, dst) {
+async function pageForDevServer (browser) {
   const page = await browser.newPage()
 
   let ready = false
@@ -43,12 +44,37 @@ async function screenshot (browser, dst) {
     }
   }
 
+  return page
+}
+
+async function screenshot (browser, dst) {
+  const page = await pageForDevServer(browser)
+
   let [width, height] = await page.evaluate(() => window.codeDimensions)
   width = parseInt(width * 1.1)
   height = parseInt(height * 1.2)
+
   await page.setViewport({ width, height })
   await page.screenshot({ path: dst })
   return page.evaluate(() => window.error)
+}
+
+async function screenshotAndSaveAll (browser, files) {
+  const errors = []
+  for (const src of files) {
+    const dst = `tmp/${path.basename(src)}.png`
+
+    shell.cp(src, 'src/tmp/source.code')
+    fs.writeFileSync('src/tmp/source.path', src)
+
+    const error = await screenshot(browser, dst)
+    if (error) errors.push(error)
+
+    trim(dst)
+    show(dst)
+  }
+
+  return errors
 }
 
 function trim (path) {
@@ -60,24 +86,14 @@ function show (dst) {
 }
 
 async function main () {
-  const files = listSourceFiles()
-  startDevServer()
-
+  const files = sourceFiles()
   shell.mkdir('-p', 'src/tmp')
   shell.mkdir('-p', 'tmp')
 
-  const browser = await startBrowser()
+  startDevServer()
 
-  const errors = []
-  for (const src of files) {
-    const dst = `tmp/${path.basename(src)}.png`
-    shell.cp(src, 'src/tmp/source.code')
-    fs.writeFileSync('src/tmp/source.path', src)
-    const error = await screenshot(browser, dst)
-    if (error) errors.push(error)
-    trim(dst)
-    show(dst)
-  }
+  const browser = await startBrowser()
+  const errors = await screenshotAndSaveAll(browser, files)
   browser.close()
 
   for (const error of errors) {
