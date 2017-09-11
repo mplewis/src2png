@@ -1,6 +1,5 @@
 const puppeteer = require('puppeteer')
 const shell = require('shelljs')
-const Jimp = require('jimp')
 const cp = require('child_process')
 const path = require('path')
 const fs = require('fs')
@@ -16,7 +15,6 @@ function listSourceFiles () {
     console.error('Usage: node src/camera.js YOUR_SOURCE_FILE')
     process.exit(1)
   }
-  shell.mkdir('-p', 'src/tmp')
   return files
 }
 
@@ -25,6 +23,11 @@ function startDevServer () {
   proc.stdout.on('data', data => console.log(data.toString('utf8')))
   proc.stderr.on('data', data => console.log(data.toString('utf8')))
   proc.on('close', code => console.log(`child proc exited with code ${code}`))
+}
+
+async function startBrowser () {
+  const args = process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox'] : []
+  return puppeteer.launch({ args })
 }
 
 async function screenshot (browser, dst) {
@@ -48,9 +51,8 @@ async function screenshot (browser, dst) {
   return page.evaluate(() => window.error)
 }
 
-async function trim (path) {
-  const img = await Jimp.read(path)
-  img.autocrop().write(path)
+function trim (path) {
+  shell.exec(`convert ${path} -trim ${path}`)
 }
 
 function show (dst) {
@@ -60,7 +62,12 @@ function show (dst) {
 async function main () {
   const files = listSourceFiles()
   startDevServer()
-  const browser = await puppeteer.launch()
+
+  shell.mkdir('-p', 'src/tmp')
+  shell.mkdir('-p', 'tmp')
+
+  const browser = await startBrowser()
+
   const errors = []
   for (const src of files) {
     const dst = `tmp/${path.basename(src)}.png`
@@ -72,10 +79,12 @@ async function main () {
     show(dst)
   }
   browser.close()
+
   for (const error of errors) {
     console.error(error)
   }
+
   process.exit() // kills any child processes (dev server)
 }
 
-main()
+module.exports = { trim, main }

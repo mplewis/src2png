@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
+
+# https://github.com/tonsky/FiraCode/issues/4#issuecomment-69215023
+mkdir -p ~/.fonts
+# changing this hardcoded version of Fira Code may break the pre-captured screenshot fixtures!
+wget https://github.com/tonsky/FiraCode/raw/862454fcdaff57c869892d0e82ed348646005444/distr/otf/FiraCode-Regular.otf -O ~/.fonts/FiraCode-Regular.otf
+fc-cache -v
+fc-list | grep 'Fira Code'

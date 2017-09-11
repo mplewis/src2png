@@ -1,25 +1,100 @@
 version: 2
 jobs:
-  build:
+  checkout_code:
     docker:
-      - image: circleci/node:7.10
-
+      - image: regviz/node-xcb
     working_directory: ~/repo
-
     steps:
       - checkout
+      - run:
+          command: echo $CIRCLE_SHA1 > .circle-sha
+      - save_cache:
+          key: v1-repo-{{ checksum ".circle-sha" }}
+          paths:
+            - ~/repo
 
+  install_dependencies:
+    docker:
+      - image: regviz/node-xcb
+    working_directory: ~/repo
+    steps:
+      - run:
+          command: echo $CIRCLE_SHA1 > .circle-sha
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          - v1-dependencies-  # fallback to using the latest cache if no exact match is found
-
+            - v1-repo-{{ checksum ".circle-sha" }}
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
       - run: yarn install
-
+      - run: test/utils/install_fira_code
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+            - ~/.fonts
+          key: v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
 
+  lint:
+    docker:
+      - image: regviz/node-xcb
+    working_directory: ~/repo
+    steps:
+      - run:
+          command: echo $CIRCLE_SHA1 > .circle-sha
+      - restore_cache:
+          keys:
+            - v1-repo-{{ checksum ".circle-sha" }}
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
       - run: yarn lint
+
+  test_unit:
+    docker:
+      - image: regviz/node-xcb
+    working_directory: ~/repo
+    steps:
+      - run:
+          command: echo $CIRCLE_SHA1 > .circle-sha
+      - restore_cache:
+          keys:
+            - v1-repo-{{ checksum ".circle-sha" }}
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
       - run: yarn test
+
+  test_integration:
+    docker:
+      - image: regviz/node-xcb
+    working_directory: ~/repo
+    steps:
+      - run:
+          command: echo $CIRCLE_SHA1 > .circle-sha
+      - restore_cache:
+          keys:
+            - v1-repo-{{ checksum ".circle-sha" }}
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+      - run: yarn test-integration
+      - store_artifacts:
+          path: ~/repo/tmp
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - checkout_code
+      - install_dependencies:
+          requires:
+            - checkout_code
+      - lint:
+          requires:
+            - install_dependencies
+      - test_unit:
+          requires:
+            - install_dependencies
+      - test_integration:
+          requires:
+            - install_dependencies

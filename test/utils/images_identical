@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+
+const Jimp = require('jimp')
+
+// https://medium.com/@dtinth/making-unhandled-promise-rejections-crash-the-node-js-process-ffc27cfcc9dd
+process.on('unhandledRejection', err => { throw err })
+
+function buffersEqual (a, b) {
+  if (!Buffer.isBuffer(a)) return undefined
+  if (!Buffer.isBuffer(b)) return undefined
+  if (typeof a.equals === 'function') return a.equals(b)
+  if (a.length !== b.length) return false
+
+  for (var i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false
+  }
+
+  return true
+}
+
+async function imageData (path) {
+  const img = await Jimp.read(path)
+  return img.bitmap.data
+}
+
+async function main () {
+  const firstPath = process.argv[2]
+  const secondPath = process.argv[3]
+  const firstData = await imageData(firstPath)
+  const secondData = await imageData(secondPath)
+
+  if (!buffersEqual(firstData, secondData)) {
+    console.error(`Images did not match: ${firstPath}, ${secondPath}`)
+    process.exit(1)
+  }
+
+  console.log(`Images identical: ${firstPath}, ${secondPath}`)
+}
+
+main()

@@ -6,9 +6,10 @@
   "license": "MIT",
   "scripts": {
     "dev": "poi dev",
-    "test": "mocha test",
-    "test-server": "mocha test --watch",
-    "lint": "eslint ."
+    "test": "mocha test test/unit/**/*_test.js",
+    "test-server": "mocha test --watch test/unit/**/*_test.js",
+    "test-integration": "test/integration/integration_test.sh",
+    "lint": "eslint --ext js,jsx ."
   },
   "devDependencies": {
     "chai": "^4.1.2",
