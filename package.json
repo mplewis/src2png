@@ -30,7 +30,7 @@
     "prismjs-components-loader": "^2.0.0",
     "puppeteer": "^0.10.2",
     "raw-loader": "^0.5.1",
-    "shelljs": "^0.7.8",
+    "shelljs": "^0.8.3",
     "vue": "^2.4.2"
   }
 }
