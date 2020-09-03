@@ -28,7 +28,7 @@
     "poi": "^9.3.5",
     "prismjs": "^1.6.0",
     "prismjs-components-loader": "^2.0.0",
-    "puppeteer": "^0.10.2",
+    "puppeteer": "^1.13.0",
     "raw-loader": "^0.5.1",
     "shelljs": "^0.7.8",
     "vue": "^2.4.2"
